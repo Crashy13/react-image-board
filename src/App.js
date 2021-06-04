@@ -1,79 +1,48 @@
 import { Component } from 'react';
 import './App.css';
-
-class ImageForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: '',
-    }
-    this.handleChangeText = this.handleChangeText.bind(this);
-    this.handleChangeImage = this.handleChangeImage.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChangeText(event) {
-    this.setState({ [event.target.name]: event.target.value })
-  }
-
-  handleChangeImage(event) {
-    this.setState({ [event.target.name]: event.target.value })
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-  }
-
-
-  render() {
-    return(
-      <form onSubmit={this.handleSubmit}>
-        <input type="text" name="image" value={this.state.image} onChange={this.handleChangeImage}/>
-        <input type="text" name="text" value={this.state.text} onChange={this.handleChangeText}/>
-        <button type="">Cancel</button>
-        <button type="submit">Add Image</button>
-      </form>
-    )
-  }
-};
-
-class ImageList extends Component{
-  render() {
-    return(
-      <ul>
-        <li>
-        <img src="this.state.image" alt=""/>
-        <p>Image 1</p>
-        </li>
-        <li>
-        <img src="this.state.image" alt=""/>
-        <p>Image 2</p>
-        </li>
-        <li>
-        <img src="this.state.image" alt=""/>
-        <p>Image 3</p>
-        </li>
-      </ul>
-    )
-  }
-};
+import ImageForm from './ImageForm'
+import ImageList from './ImageList'
 
 class ImageBoard extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      image: [],
+      images: [],
+      counter: 3,
     }
+
+    this.addImage = this.addImage.bind(this);
   }
 
+  componentDidMount() {
+    const images = [
+      { id: 1,
+        url: 'https://am21.mediaite.com/tms/cnt/uploads/2019/04/Heroes-in-crisis-reveal-is-harsh.jpg',
+        description: 'Image 1'
+      },
+      { id: 2,
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCwAa50X_T2lzpZ4HktTHWt7qW7hU1Aj3bqw&usqp=CAU',
+        description: 'Image 2'
+      }
+    ];
 
+    this.setState({ images });
+  }
+
+  addImage(image) {
+    image.id = this.state.counter;
+    const images = [ ...this.state.images ]; // creates a shallow copy of images
+    images.push(image); // pushes new image into images array
+    // this.setState({ images });
+    this.setState((state) => ({ images, counter: state.counter + 1 })); // re-render to update images and the counter
+  }
 
   render() {
     return(
-      <div>
-        <ImageForm />
-        <ImageList />
-      </div>
+      <>
+        <ImageForm addImage={this.addImage}/>
+        <ImageList images={this.state.images} />
+      </>
     )
   }
 }
